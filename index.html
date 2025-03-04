@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        input { width: 80%; padding: 10px; margin: 10px 0; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Stock Analysis</h1>
+        <input type="text" id="stock-symbol" placeholder="Enter stock symbol (e.g., AAPL)">
+        <button onclick="fetchStockHistory()">Get Analysis</button>
+        <p id="volatility"></p>
+        <canvas id="stockChart"></canvas>
+    </div>
+
+    <script>
+        function fetchStockHistory() {
+            let stockSymbol = document.getElementById('stock-symbol').value.trim().toUpperCase();
+            
+            if (!stockSymbol) {
+                document.getElementById('volatility').innerHTML = "<span class='error'>Please enter a stock symbol.</span>";
+                return;
+            }
+
+            fetch(`https://aea48765-a8d0-4d9f-83b8-4d953d585e21-00-69c2x65msclv.pike.replit.dev/stock-history?symbol=${stockSymbol}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.prices) {
+                        document.getElementById('volatility').innerHTML = `<b>Volatility:</b> ${data.volatility}`;
+
+                        let ctx = document.getElementById('stockChart').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.dates,
+                                datasets: [
+                                    {
+                                        label: 'Stock Price',
+                                        borderColor: 'blue',
+                                        data: data.prices,
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'SMA (10-day)',
+                                        borderColor: 'red',
+                                        data: data.SMA_10,
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'EMA (10-day)',
+                                        borderColor: 'green',
+                                        data: data.EMA_10,
+                                        fill: false
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: { x: { display: true }, y: { display: true } }
+                            }
+                        });
+                    } else {
+                        document.getElementById('volatility').innerHTML = `<span class="error">Error: ${data.error || "Unable to fetch data"}</span>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('volatility').innerHTML = `<span class="error">Error: Failed to connect to the server</span>`;
+                });
+        }
+    </script><br><br>
+
+<h5 style="text-align: left;"><b>Stock Volatility (Standard Deviation of Daily Returns)</b></h5>
+<p style="text-align: left;">Stock volatility measures how much a stock's price fluctuates over time. It is calculated as the standard deviation of daily returns, showing the degree of variation in price movements. A higher volatility indicates larger price swings, making the stock riskier, while lower volatility suggests more stable price movements.</p>
+
+<h5 style="text-align: left;"><b>Simple Moving Average (SMA-10)</b></h5>
+<p style="text-align: left;">Stock volatility measures how much a stock's price fluctuates over time. It is calculated as the standard deviation of daily returns, showing the degree of variation in price movements. A higher volatility indicates larger price swings, making the stock riskier, while lower volatility suggests more stable price movements.</p>
+
+<h5 style="text-align: left;"><b>Exponential Moving Average (EMA-10)</b></h5>
+<p style="text-align: left;">Stock volatility measures how much a stock's price fluctuates over time. It is calculated as the standard deviation of daily returns, showing the degree of variation in price movements. A higher volatility indicates larger price swings, making the stock riskier, while lower volatility suggests more stable price movements.</p>
+
+</body>
+</html>
