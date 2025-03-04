@@ -20,7 +20,9 @@
         <h1>Stock Analysis</h1>
         <input type="text" id="stock-symbol" placeholder="Enter stock symbol (e.g., AAPL)">
         <button onclick="fetchStockHistory()">Get Analysis</button>
-        <p id="volatility"></p>
+        <p id="volatility" style="text-align: left;"></p>
+        <p id="current-price" style="text-align: left;"></p>  <!-- Current price added here -->
+        <p id="predicted-price" style="text-align: left;"></p> <!-- Predicted price added here -->
         <canvas id="stockChart"></canvas>
     </div>
 
@@ -38,6 +40,8 @@
                 .then(data => {
                     if (data.prices) {
                         document.getElementById('volatility').innerHTML = `<b>Volatility:</b> ${data.volatility}`;
+                        document.getElementById('current-price').innerHTML = `<b>Current Price:</b> $${data.prices[data.prices.length - 1]}`; // Latest price
+                        document.getElementById('predicted-price').innerHTML = `<b>Predicted Price:</b> $${data.predicted_price || "N/A"}`; // Predicted price
 
                         let ctx = document.getElementById('stockChart').getContext('2d');
                         new Chart(ctx, {
@@ -72,22 +76,29 @@
                         });
                     } else {
                         document.getElementById('volatility').innerHTML = `<span class="error">Error: ${data.error || "Unable to fetch data"}</span>`;
+                        document.getElementById('current-price').innerHTML = "";
+                        document.getElementById('predicted-price').innerHTML = "";
                     }
                 })
                 .catch(error => {
                     document.getElementById('volatility').innerHTML = `<span class="error">Error: Failed to connect to the server</span>`;
+                    document.getElementById('current-price').innerHTML = "";
+                    document.getElementById('predicted-price').innerHTML = "";
                 });
         }
     </script><br><br>
 
-<h5 style="text-align: left;"><b>Stock Volatility (Standard Deviation of Daily Returns)</b></h5>
-<p style="text-align: left;">Stock volatility measures how much a stock's price fluctuates over time. It is calculated as the standard deviation of daily returns, showing the degree of variation in price movements. A higher volatility indicates larger price swings, making the stock riskier, while lower volatility suggests more stable price movements.</p>
+    <h5 style="text-align: left;"><b>Stock Volatility (Standard Deviation of Daily Returns)</b></h5>
+    <p style="text-align: left;">Stock volatility measures how much a stock's price fluctuates over time. It is calculated as the standard deviation of daily returns, showing the degree of variation in price movements. A higher volatility indicates larger price swings, making the stock riskier, while lower volatility suggests more stable price movements.</p>
 
-<h5 style="text-align: left;"><b>Simple Moving Average (SMA-10)</b></h5>
-<p style="text-align: left;">Stock volatility measures how much a stock's price fluctuates over time. It is calculated as the standard deviation of daily returns, showing the degree of variation in price movements. A higher volatility indicates larger price swings, making the stock riskier, while lower volatility suggests more stable price movements.</p>
+    <h5 style="text-align: left;"><b>Simple Moving Average (SMA-10)</b></h5>
+    <p style="text-align: left;">The Simple Moving Average (SMA) is calculated by averaging the closing prices over a fixed period (e.g., 10 days). It helps smooth out price fluctuations and identify trends.</p>
 
-<h5 style="text-align: left;"><b>Exponential Moving Average (EMA-10)</b></h5>
-<p style="text-align: left;">Stock volatility measures how much a stock's price fluctuates over time. It is calculated as the standard deviation of daily returns, showing the degree of variation in price movements. A higher volatility indicates larger price swings, making the stock riskier, while lower volatility suggests more stable price movements.</p>
+    <h5 style="text-align: left;"><b>Exponential Moving Average (EMA-10)</b></h5>
+    <p style="text-align: left;">The Exponential Moving Average (EMA) gives more weight to recent prices, making it more responsive to new price changes compared to the SMA.</p>
+
+    <h5 style="text-align: left;"><b>Stock Price Prediction</b></h5>
+    <p style="text-align: left;">The stock price prediction is an estimated future price based on historical trends and statistical models. It uses machine learning techniques to analyze past performance and forecast possible future movements.</p>
 
 </body>
 </html>
