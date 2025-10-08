@@ -4,11 +4,13 @@ import numpy as np
 import pandas as pd
 from flask_cors import CORS
 from sklearn.linear_model import LinearRegression
+import dotenv from "dotenv";
+dotenv.config();
 
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = "O83XMS2GA8JNO283"  # Your Alpha Vantage API Key
+apikey = process.env.API_KEY  # Your Alpha Vantage API Key
 
 @app.route('/')
 def home():
@@ -79,3 +81,4 @@ def get_stock_history():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
+
